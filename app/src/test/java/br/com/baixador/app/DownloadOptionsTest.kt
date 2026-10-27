@@ -9,11 +9,11 @@ class DownloadOptionsTest {
         assertNull(DownloadOptions.sharedUrl("não tem link"))
     }
     @Test fun videoLimits() {
-        assertEquals("bv*+ba/b", DownloadOptions.selector("Melhor disponível"))
+        assertEquals("bv*+ba/b", DownloadOptions.selector(DownloadOptions.BEST))
         assertEquals("bv*[height<=?720]+ba/b[height<=?720]", DownloadOptions.selector("720p"))
     }
     @Test fun audioBitrate() {
-        assertEquals("0", DownloadOptions.bitrate("Melhor disponível"))
+        assertEquals("0", DownloadOptions.bitrate(DownloadOptions.BEST))
         assertEquals("192K", DownloadOptions.bitrate("192 kbps"))
     }
 }

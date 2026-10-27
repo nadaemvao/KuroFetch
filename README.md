@@ -1,5 +1,9 @@
 # KuroFetch
 
+**Baixe o que importa.**
+
+[Read in English](README.en.md)
+
 Um aplicativo Android para baixar mídia, com uma interface minimalista em preto e branco. O processamento acontece no próprio dispositivo usando yt-dlp e FFmpeg.
 
 ![Tela do KuroFetch](docs/tela.png)
@@ -15,7 +19,7 @@ A disponibilidade dos formatos depende da fonte e do conteúdo. Cada download é
 
 ## Compatibilidade
 
-- Android 10 ou superior.
+- Android 10 ou superior, com interface em português ou inglês conforme o idioma do dispositivo.
 - O aplicativo inclui yt-dlp, um runtime Python, QuickJS e FFmpeg através dos componentes indicados em [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 - Serviços externos podem mudar e exigir atualizações. Nem todos os sites e links foram testados.
 

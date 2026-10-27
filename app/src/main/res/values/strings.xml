@@ -1,0 +1,35 @@
+<resources>
+    <string name="shared_link_invalid">No valid link was found. Paste a link below.</string>
+    <string name="clipboard_empty">There is no text to paste.</string>
+    <string name="link_invalid">Paste a valid link starting with http:// or https://.</string>
+    <string name="paste_link">Paste a link</string>
+    <string name="paste">PASTE</string>
+    <string name="video">Video</string>
+    <string name="audio">Audio</string>
+    <string name="quality">Quality</string>
+    <string name="quality_best">Best available</string>
+    <string name="save_to">Save to</string>
+    <string name="downloads">Downloads</string>
+    <string name="downloads_menu">Downloads   ▾</string>
+    <string name="chosen_folder_menu">Selected folder   ▾</string>
+    <string name="download_action">↓   DOWNLOAD</string>
+    <string name="downloading_action">DOWNLOADING...</string>
+    <string name="open_file">OPEN FILE</string>
+    <string name="download_preparing">Preparing download...</string>
+    <string name="download_start_failed">Could not start the download.</string>
+    <string name="download_preparing_file">Preparing file...</string>
+    <string name="download_progress">Downloading... %1$d%%</string>
+    <string name="download_saving">Saving file...</string>
+    <string name="download_complete">Download complete! Tap Open file.</string>
+    <string name="notification_complete">Download complete. Tap to open.</string>
+    <string name="download_failed">Could not complete the download. Check the link, connection and folder access.</string>
+    <string name="download_failed_details">Could not complete the download. Check the link, connection and folder access. Details: %1$s</string>
+    <string name="folder_access_failed">Could not access this folder. Choose another.</string>
+    <string name="file_open_failed">File saved, but no app is available to open it.</string>
+    <string name="file_not_found">The final file was not found.</string>
+    <string name="ytdlp_prepare_failed">Could not prepare yt-dlp.</string>
+    <string name="ytdlp_update_failed">Could not update yt-dlp.</string>
+    <string name="folder_create_failed">Could not create the file in the selected folder.</string>
+    <string name="downloads_create_failed">Could not create the file in Downloads.</string>
+    <string name="file_write_failed">Could not write the file.</string>
+</resources>

@@ -1,0 +1,35 @@
+<resources>
+    <string name="shared_link_invalid">Nenhum link válido foi encontrado. Cole um link abaixo.</string>
+    <string name="clipboard_empty">Não há texto para colar.</string>
+    <string name="link_invalid">Cole um link válido começando com http:// ou https://.</string>
+    <string name="paste_link">Cole o link</string>
+    <string name="paste">COLAR</string>
+    <string name="video">Vídeo</string>
+    <string name="audio">Áudio</string>
+    <string name="quality">Qualidade</string>
+    <string name="quality_best">Melhor disponível</string>
+    <string name="save_to">Salvar em</string>
+    <string name="downloads">Downloads</string>
+    <string name="downloads_menu">Downloads   ▾</string>
+    <string name="chosen_folder_menu">Pasta escolhida   ▾</string>
+    <string name="download_action">↓   BAIXAR</string>
+    <string name="downloading_action">BAIXANDO...</string>
+    <string name="open_file">ABRIR ARQUIVO</string>
+    <string name="download_preparing">Preparando download...</string>
+    <string name="download_start_failed">Não foi possível iniciar o download.</string>
+    <string name="download_preparing_file">Preparando o arquivo...</string>
+    <string name="download_progress">Baixando... %1$d%%</string>
+    <string name="download_saving">Salvando arquivo...</string>
+    <string name="download_complete">Download concluído! Toque em Abrir arquivo.</string>
+    <string name="notification_complete">Download concluído. Toque para abrir.</string>
+    <string name="download_failed">Não foi possível concluir. Verifique o link, a conexão e o acesso à pasta.</string>
+    <string name="download_failed_details">Não foi possível concluir. Verifique o link, a conexão e o acesso à pasta. Detalhes: %1$s</string>
+    <string name="folder_access_failed">Não foi possível acessar essa pasta. Escolha outra.</string>
+    <string name="file_open_failed">Arquivo salvo, mas não há aplicativo disponível para abri-lo.</string>
+    <string name="file_not_found">O arquivo final não foi encontrado.</string>
+    <string name="ytdlp_prepare_failed">Não foi possível preparar o yt-dlp.</string>
+    <string name="ytdlp_update_failed">Não foi possível atualizar o yt-dlp.</string>
+    <string name="folder_create_failed">Não foi possível criar o arquivo na pasta escolhida.</string>
+    <string name="downloads_create_failed">Não foi possível criar o arquivo em Downloads.</string>
+    <string name="file_write_failed">Não foi possível gravar o arquivo.</string>
+</resources>

@@ -28,18 +28,18 @@ class DownloadService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        getSystemService<NotificationManager>()?.createNotificationChannel(NotificationChannel(channel, "Downloads", NotificationManager.IMPORTANCE_LOW))
+        getSystemService<NotificationManager>()?.createNotificationChannel(NotificationChannel(channel, getString(R.string.downloads), NotificationManager.IMPORTANCE_LOW))
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        startForeground(notificationId, notification("Preparando download...", null))
+        startForeground(notificationId, notification(getString(R.string.download_preparing), null))
         val url = intent?.getStringExtra("url")
         if (url.isNullOrBlank()) {
-            DownloadState.busy.set(false); DownloadState.status.value = "Não foi possível iniciar o download."
+            DownloadState.busy.set(false); DownloadState.status.value = DisplayMessage(R.string.download_start_failed)
             stopForeground(STOP_FOREGROUND_REMOVE); stopSelf(startId); return START_NOT_STICKY
         }
         val audio = intent.getBooleanExtra("audio", false)
-        val quality = intent.getStringExtra("quality") ?: "Melhor disponível"
+        val quality = intent.getStringExtra("quality") ?: DownloadOptions.BEST
         val folder = intent.getStringExtra("folder")
         Thread { download(url, audio, quality, folder, startId) }.start()
         return START_NOT_STICKY
@@ -62,10 +62,11 @@ class DownloadService : Service() {
         return builder.build()
     }
 
-    private fun publish(message: String, percent: Int?) {
+    private fun publish(message: DisplayMessage, percent: Int?) {
         DownloadState.progress.value = percent
         DownloadState.status.value = message
-        getSystemService<NotificationManager>()?.notify(notificationId, notification(message, percent))
+        val text = getString(message.resource, *message.arguments.toTypedArray())
+        getSystemService<NotificationManager>()?.notify(notificationId, notification(text, percent))
     }
 
     private fun download(url: String, audio: Boolean, quality: String, folder: String?, startId: Int) {
@@ -83,26 +84,26 @@ class DownloadService : Service() {
             else request.addOption("-f", DownloadOptions.selector(quality)).addOption("-S", "res,ext:mp4:m4a").addOption("--merge-output-format", "mp4")
             YoutubeDL.execute(request, "download", false) { percent, _, _ ->
                 val p = percent.toInt().coerceIn(0, 100)
-                publish(if (p == 100) "Preparando o arquivo..." else "Baixando... $p%", p)
+                publish(if (p == 100) DisplayMessage(R.string.download_preparing_file) else DisplayMessage(R.string.download_progress, listOf(p)), p)
             }
-            publish("Salvando arquivo...", null)
+            publish(DisplayMessage(R.string.download_saving), null)
             val file = temporary.listFiles()?.filter { it.isFile && !it.name.endsWith(".part") && !it.name.endsWith(".ytdl") }
-                ?.maxByOrNull { it.lastModified() } ?: throw IllegalStateException("O arquivo final não foi encontrado.")
+                ?.maxByOrNull { it.lastModified() } ?: throw IllegalStateException(getString(R.string.file_not_found))
             completed = saveFile(file, folder)
             DownloadState.result.value = completed.toString()
             DownloadState.busy.set(false)
             DownloadState.progress.value = 100
-            DownloadState.status.value = "Download concluído! Toque em Abrir arquivo."
+            DownloadState.status.value = DisplayMessage(R.string.download_complete)
             stopForeground(STOP_FOREGROUND_REMOVE)
-            getSystemService<NotificationManager>()?.notify(notificationId, notification("Download concluído. Toque para abrir.", null, completed))
+            getSystemService<NotificationManager>()?.notify(notificationId, notification(getString(R.string.notification_complete), null, completed))
         } catch (e: Exception) {
             DownloadState.busy.set(false)
             val detail = e.message?.replace('\n', ' ')?.take(280).orEmpty()
-            val msg = "Não foi possível concluir. Verifique o link, a conexão e o acesso à pasta." + if (detail.isNotEmpty()) " Detalhes: $detail" else ""
+            val msg = if (detail.isNotEmpty()) DisplayMessage(R.string.download_failed_details, listOf(detail)) else DisplayMessage(R.string.download_failed)
             DownloadState.status.value = msg
             DownloadState.progress.value = null
             stopForeground(STOP_FOREGROUND_REMOVE)
-            getSystemService<NotificationManager>()?.notify(notificationId, notification(msg, null))
+            getSystemService<NotificationManager>()?.notify(notificationId, notification(getString(msg.resource, *msg.arguments.toTypedArray()), null))
         } finally {
             temporary.deleteRecursively()
             stopSelf(startId)
@@ -115,10 +116,10 @@ class DownloadService : Service() {
         val marker = File(directory, "bundled-version")
         val version = "2026.10.26"
         if (binary.isFile && marker.isFile && marker.readText() == version) return
-        check(directory.isDirectory || directory.mkdirs()) { "Não foi possível preparar o yt-dlp." }
+        check(directory.isDirectory || directory.mkdirs()) { getString(R.string.ytdlp_prepare_failed) }
         val temporary = File(directory, "yt-dlp.new")
         resources.openRawResource(R.raw.ytdlp).use { input -> temporary.outputStream().use { output -> input.copyTo(output) } }
-        check(temporary.renameTo(binary)) { "Não foi possível atualizar o yt-dlp." }
+        check(temporary.renameTo(binary)) { getString(R.string.ytdlp_update_failed) }
         marker.writeText(version)
     }
 
@@ -127,18 +128,18 @@ class DownloadService : Service() {
         val tree = folder?.let(Uri::parse)
         val uri = if (tree != null) {
             val parent = DocumentsContract.buildDocumentUriUsingTree(tree, DocumentsContract.getTreeDocumentId(tree))
-            DocumentsContract.createDocument(contentResolver, parent, mime, file.name) ?: throw IllegalStateException("Não foi possível criar o arquivo na pasta escolhida.")
+            DocumentsContract.createDocument(contentResolver, parent, mime, file.name) ?: throw IllegalStateException(getString(R.string.folder_create_failed))
         } else {
             val values = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, file.name); put(MediaStore.MediaColumns.MIME_TYPE, mime)
                 put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/Baixador")
                 put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
-            contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values) ?: throw IllegalStateException("Não foi possível criar o arquivo em Downloads.")
+            contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values) ?: throw IllegalStateException(getString(R.string.downloads_create_failed))
         }
         try {
             contentResolver.openOutputStream(uri)?.use { output -> file.inputStream().use { input -> input.copyTo(output) } }
-                ?: throw IllegalStateException("Não foi possível gravar o arquivo.")
+                ?: throw IllegalStateException(getString(R.string.file_write_failed))
             if (tree == null) contentResolver.update(uri, ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 0) }, null, null)
             return uri
         } catch (e: Exception) {
@@ -147,4 +148,3 @@ class DownloadService : Service() {
         }
     }
 }
-
